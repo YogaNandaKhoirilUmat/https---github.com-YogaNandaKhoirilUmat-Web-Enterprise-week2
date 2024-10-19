@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Dashboard Penjualan</title>
-    <link rel="stylesheet" href="{{ asset('/css/styles2.css') }}">
+    <link rel="stylesheet" href="{{ asset('/css/styles.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css"> <!-- Link to the separated CSS file -->
 </head>
@@ -25,27 +25,43 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <header>
-            <h1>Selamat Datang di Dashboard Penjualan</h1>
+        <header style="display: flex; justify-content: space-between">
+            <div>
+                <h1>Daftar Produk</h1>
+                <p>Temukan produk terbaik untuk kebutuhan anda</p>
+            </div>
+            <div>
+                <button class="card-button"><a class="text-decoration-none text-white" href="{{ url('produk/add') }}">Add Product</a></button>
+            </div>
         </header>
 
-        <!-- Product Grid -->
-        <div class="product-grid">
 
+        <!-- Product Grid -->
+        @foreach($produk as $item)
+
+        <div class="product-grid">
             <!-- Product Card 1 -->
-            @foreach($produk as $item)
             <div class="product-card">
-                <img src="https://via.placeholder.com/200" alt="Product 2">
+                <img src="{{ url('storage/public/images/' .$item->image)}}" alt="Product 1">
                 <h3>{{$item->nama_produk }}</h3>
                 <p class="price">{{$item->harga }}</p>
                 <p class="description">{{$item->deskripsi }}</p>
-                <button class="card-button">Edit</button>
-                <button class="card-button">Delete</button>
+                {{-- <button class="card-button">Edit</button> --}}
+                <div style="display: flex; justify-content: center">
+                    <a class="btn btn-success mr-2" href="{{ url('/produk/edit/'.$item->kode_produk) }}">Edit</a>
+                {{-- <button class="card-button">Delete</button> --}}
+                <form action="{{ url('/produk/delete/'.$item->kode_produk) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+
             </div>
-            @endforeach
 
 
         </div>
+        @endforeach
+
     </div>
 
 
