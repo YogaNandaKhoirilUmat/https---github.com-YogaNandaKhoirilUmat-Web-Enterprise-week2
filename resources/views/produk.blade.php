@@ -37,7 +37,7 @@
                 <p>Temukan produk terbaik untuk kebutuhan anda</p>
             </div>
             <div>
-                <button class="card-button"><a class="text-decoration-none text-white" href="{{ url('produk/add') }}">Add Product</a></button>
+                <button class="card-button"><a class="text-decoration-none text-white" href="{{ url(Auth::user()->role . '/produk/add') }}">Add Product</a></button>
             </div>
         </header>
 
@@ -48,15 +48,15 @@
         <div class="product-grid">
             <!-- Product Card 1 -->
             <div class="product-card">
-                <img src="{{ url('storage/public/images/' .$item->image)}}" alt="Product 1">
+                <img src="{{ asset('storage/public/images/' . $item->image) }}" alt="Product Image">
                 <h3>{{$item->nama_produk }}</h3>
                 <p class="price">{{$item->harga }}</p>
                 <p class="description">{{$item->deskripsi }}</p>
                 {{-- <button class="card-button">Edit</button> --}}
                 <div style="display: flex; justify-content: center">
-                    <a class="btn btn-success mr-2" href="{{ url('/produk/edit/'.$item->kode_produk) }}">Edit</a>
+                    <a class="btn btn-success mr-2" href="{{ url(Auth::user()->role . '/produk/edit/' . $item->kode_produk) }}">Edit</a>
                 {{-- <button class="card-button">Delete</button> --}}
-                <form action="{{ url('/produk/delete/'.$item->kode_produk) }}" method="POST">
+                <form action="{{ url(Auth::user()->role . '/produk/delete/' . $item->kode_produk) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>

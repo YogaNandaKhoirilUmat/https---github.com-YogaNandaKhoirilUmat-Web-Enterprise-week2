@@ -16,14 +16,15 @@ class UserAccessMiddleware
      */
     public function handle(Request $request, Closure $next, $userType): Response
     {
-        //cek apakah user sudah login
-        if(Auth::user()->role == $userType){
-        return $next($request);
+        // Pastikan pengguna sudah login
+        if (Auth::check() && Auth::user()->role === $userType) {
+            return $next($request);
         }
-        //jika user tidak memiliki akses, kirim pesan error
-        return response()->json(['error'=>'You do not have permission to acces for this page.',
-            'userType'=>$userType
-        ]);
-    }
 
+        // Jika pengguna tidak memiliki akses, berikan respons error
+        return response()->json([
+            'error' => 'You do not have permission to access this page.',
+            'userType' => $userType
+        ], Response::HTTP_FORBIDDEN); // Menggunakan kode status 403 untuk "forbidden"
+    }
 }

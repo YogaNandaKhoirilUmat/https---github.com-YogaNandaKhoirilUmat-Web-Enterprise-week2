@@ -30,7 +30,7 @@ class ProdukController extends Controller
        if ($request->hasFile('image')) {
            $imageFile = $request->file('image');
            $imageName = time() . '.' . $imageFile->getClientOriginalExtension();
-           $imageFile->storeAs('public\images', $imageName);
+           $imageFile->storeAs('public/images', $imageName);
          }
         Produk::create([
             'nama_produk' => $request->nama_produk,
@@ -68,7 +68,7 @@ class ProdukController extends Controller
         if ($request->hasFile('image')) {
             $imageFile = $request->file('image');
             $imageName = time() . '.' . $imageFile->getClientOriginalExtension();
-            $imageFile->storeAs('public\images', $imageName);
+            $imageFile->storeAs('public/images', $imageName);
         }
         Produk::where('kode_produk', $kode_produk)->update([
             'nama_produk' => $request->nama_produk,
@@ -83,20 +83,24 @@ class ProdukController extends Controller
 
     public function ViewLaporan()
     {
-        //mengambil semua data produk
-        $produk = Produk::all();
-        return view('laporan', ['produk' => $produk]); //menampilkan view dari laporan.blade.php dengan membawa variabel $produk
+        // Cek apakah pengguna adalah admin
+        $isAdmin = Auth::user()->role == 'admin';
+
+        // Jika pengguna adalah admin, ambil semua produk; jika bukan, hanya ambil produk milik pengguna tersebut
+        $produk = $isAdmin ? Produk::all() : Produk::where('user_id', Auth::user()->id)->get();
+
+        return view('laporan', ['produk' => $produk]); // Tampilkan view 'laporan' dengan data yang sesuai
     }
 
-    public function print ()
+    public function print()
     {
-        //mengambil semua data produk
-        $products = Produk::all();
+        $isAdmin = Auth::user()->role == 'admin';
+        $products = $isAdmin ? Produk::all() : Produk::where('user_id', Auth::user()->id)->get();
 
-        //load view untuk pdf dengan data produk
         $pdf = Pdf::loadView('report', compact('products'));
 
-        //menampilkan pdf langsung di browser
         return $pdf->stream('laporan-produk.pdf');
     }
+
+
 }
